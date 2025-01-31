@@ -10,7 +10,7 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
   title: "Ecommerce App",
-  description: "A platform to list and send products.",
+  description: "A platform to list and sell products.",
 };
 
 export default function RootLayout({
