@@ -17,7 +17,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@radix-ui/react-dropdown-menu";
+import {
+  ActiveToggleDropdownItem,
+  DeleteDropdownItem,
+} from "./_components/ProductActions";
 
 export default function AdminProductPage() {
   return (
@@ -72,12 +77,12 @@ async function ProductsTable() {
               <TableCell>
                 {product.isAvailableForPurchase ? (
                   <>
-                    <CheckCircle2 />
+                    <CheckCircle2 className="stroke-green-600" />
                     <span className="sr-only">Available</span>
                   </>
                 ) : (
                   <>
-                    <XCircle />
+                    <XCircle className="stroke-destructive" />
                     <span className="sr-only">UnAvailable</span>
                   </>
                 )}
@@ -88,6 +93,7 @@ async function ProductsTable() {
               </TableCell>
               <TableCell>{formatNumber(product._count.orders)}</TableCell>
               <TableCell>
+                <div></div>
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <MoreVertical />
@@ -97,14 +103,12 @@ async function ProductsTable() {
                     className="ml-20 
                   flex flex-col 
                   fill-background 
-                  bg-black text-white 
+                  bg-slate-200 text-black shadow-xl
                   px-2 py-2 
-                  rounded"
+                  rounded
+                  "
                   >
-                    <DropdownMenuItem
-                      asChild
-                      className=" hover:bg-gray-800 rounded"
-                    >
+                    <DropdownMenuItem asChild className=" hover:bg-slate-500">
                       <a
                         download
                         href={`/src/app/admin/products/${product.id}/download`}
@@ -112,14 +116,28 @@ async function ProductsTable() {
                         Download
                       </a>
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      asChild
-                      className=" hover:bg-gray-800 rounded"
-                    >
-                      <Link href={`/admin/produts/${product.id}/edit`}>
+                    <DropdownMenuItem asChild className=" hover:bg-slate-500">
+                      <Link href={`/admin/products/${product.id}/edit`}>
                         Edit
                       </Link>
                     </DropdownMenuItem>
+                    <div className="cursor-pointer">
+                      <div className=" hover:bg-slate-500">
+                        <ActiveToggleDropdownItem
+                          id={product.id}
+                          isAvailableForPurchase={
+                            product.isAvailableForPurchase
+                          }
+                        />
+                      </div>
+                      <DropdownMenuSeparator />
+                      <div className="text-red-400 hover:bg-red-300">
+                        <DeleteDropdownItem
+                          id={product.id}
+                          disabled={product._count.orders > 0}
+                        />
+                      </div>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
