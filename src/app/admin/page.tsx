@@ -4,7 +4,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/components/ui/card";
+} from "@/components/ui/Card";
 import db from "@/db/db";
 import { formatNumber, formatCurrency } from "@/lib/formatters";
 
@@ -44,10 +44,10 @@ async function getUserData() {
   };
 }
 
-async function getProductData() {
+async function getServiceData() {
   const [isActiveCount, inActiveCount] = await Promise.all([
-    db.product.count({ where: { isAvailableForPurchase: true } }),
-    db.product.count({ where: { isAvailableForPurchase: false } }),
+    db.service.count({ where: { isAvailableForPurchase: true } }),
+    db.service.count({ where: { isAvailableForPurchase: false } }),
   ]);
   return {
     isActiveCount,
@@ -56,18 +56,18 @@ async function getProductData() {
 }
 
 export default async function AdminDashboard() {
-  const [salesData, userData, productData] = await Promise.all([
+  const [salesData, userData, serviceData] = await Promise.all([
     getSalesData(),
     getUserData(),
-    getProductData(),
+    getServiceData(),
   ]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <DashboardCard
-        title="Product"
-        subtitle={`${formatNumber(productData.isActiveCount)} Available`}
-        body={`${formatNumber(productData.inActiveCount)} Unavailable`}
+        title="Services"
+        subtitle={`${formatNumber(serviceData.isActiveCount)} Available`}
+        body={`${formatNumber(serviceData.inActiveCount)} Unavailable`}
       />
       <DashboardCard
         title="Customers"

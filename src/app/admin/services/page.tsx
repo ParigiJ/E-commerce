@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { PageHeader } from "../../_components/PageHeader";
 import Link from "next/link";
 import {
@@ -8,7 +8,7 @@ import {
   TableRow,
   TableBody,
   TableCell,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import db from "@/db/db";
 import { CheckCircle2, MoreVertical, XCircle } from "lucide-react";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
@@ -22,24 +22,24 @@ import {
 import {
   ActiveToggleDropdownItem,
   DeleteDropdownItem,
-} from "./_components/ProductActions";
+} from "./_components/ServiceActions";
 
-export default function AdminProductPage() {
+export default function AdminServicePage() {
   return (
     <>
       <div className="flex items-center gap-4 justify-between">
-        <PageHeader>Products</PageHeader>
+        <PageHeader>Services</PageHeader>
         <Button asChild>
-          <Link href="/admin/products/new">Add Product</Link>
+          <Link href="/admin/services/new">Add Service</Link>
         </Button>
       </div>
-      <ProductsTable />
+      <ServicesTable />
     </>
   );
 }
 
-async function ProductsTable() {
-  const products = await db.product.findMany({
+async function ServicesTable() {
+  const services = await db.service.findMany({
     select: {
       id: true,
       name: true,
@@ -50,9 +50,9 @@ async function ProductsTable() {
     orderBy: { name: "asc" },
   });
 
-  if (products.length === 0) {
+  if (services.length === 0) {
     return (
-      <div className="text-muted-foreground italic">No products found</div>
+      <div className="text-muted-foreground italic">No services found</div>
     );
   }
   return (
@@ -72,10 +72,10 @@ async function ProductsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
+          {services.map((service) => (
+            <TableRow key={service.id}>
               <TableCell>
-                {product.isAvailableForPurchase ? (
+                {service.isAvailableForPurchase ? (
                   <>
                     <CheckCircle2 className="stroke-green-600" />
                     <span className="sr-only">Available</span>
@@ -87,11 +87,11 @@ async function ProductsTable() {
                   </>
                 )}
               </TableCell>
-              <TableCell>{product.name}</TableCell>
+              <TableCell>{service.name}</TableCell>
               <TableCell>
-                {formatCurrency(product.priceInCents / 100)}
+                {formatCurrency(service.priceInCents / 100)}
               </TableCell>
-              <TableCell>{formatNumber(product._count.orders)}</TableCell>
+              <TableCell>{formatNumber(service._count.orders)}</TableCell>
               <TableCell>
                 <div></div>
                 <DropdownMenu>
@@ -111,30 +111,30 @@ async function ProductsTable() {
                     <DropdownMenuItem asChild className=" hover:bg-slate-500">
                       <a
                         download
-                        href={`/src/app/admin/products/${product.id}/download`}
+                        href={`/admin/services/${service.id}/download`}
                       >
                         Download
                       </a>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild className=" hover:bg-slate-500">
-                      <Link href={`/admin/products/${product.id}/edit`}>
+                      <Link href={`/admin/services/${service.id}/edit`}>
                         Edit
                       </Link>
                     </DropdownMenuItem>
                     <div className="cursor-pointer">
                       <div className=" hover:bg-slate-500">
                         <ActiveToggleDropdownItem
-                          id={product.id}
+                          id={service.id}
                           isAvailableForPurchase={
-                            product.isAvailableForPurchase
+                            service.isAvailableForPurchase
                           }
                         />
                       </div>
                       <DropdownMenuSeparator />
                       <div className="text-red-400 hover:bg-red-300">
                         <DeleteDropdownItem
-                          id={product.id}
-                          disabled={product._count.orders > 0}
+                          id={service.id}
+                          disabled={service._count.orders > 0}
                         />
                       </div>
                     </div>
