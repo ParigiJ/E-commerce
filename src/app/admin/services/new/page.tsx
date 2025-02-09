@@ -1,13 +1,13 @@
 import { PageHeader } from "@/app/_components/PageHeader";
-import ProductForm from "./_components/ProductForm";
-export default function NewProduct() {
+import ServiceForm from "../_components/ServiceForm";
+export default function Service() {
   return (
     <>
       <div>
         <div className="ml-2">
-          <PageHeader>Add Product</PageHeader>
+          <PageHeader>Add Service</PageHeader>
         </div>
-        <ProductForm />
+        <ServiceForm />
       </div>
     </>
   );

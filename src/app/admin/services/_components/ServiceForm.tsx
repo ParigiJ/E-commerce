@@ -1,19 +1,23 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/Label";
+import { Input } from "@/components/ui/Input";
 import { useState, useActionState } from "react";
 import { formatCurrency } from "@/lib/formatters";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { addProduct } from "@/app/_actions/product";
+import { Textarea } from "@/components/ui/TextArea";
+import { Button } from "@/components/ui/Button";
+import { addService, updateService } from "@/app/admin/_actions/service";
 import { useFormStatus } from "react-dom";
-import { Product } from "@prisma/client";
+import { Service } from "@prisma/client";
+import Image from "next/image";
 
-export default function ProductForm({ product }: { product?: Product | null }) {
-  const [error, action] = useActionState(addProduct, {});
+export default function ServiceForm({ service }: { service?: Service | null }) {
+  const [error, action] = useActionState(
+    service == null ? addService : updateService.bind(null, service.id),
+    {}
+  );
   const [priceInCents, setPriceInCents] = useState<number | undefined>(
-    product?.priceInCents
+    service?.priceInCents
   );
   const formattedPrice = formatCurrency((priceInCents || 0) / 100);
 
@@ -27,9 +31,9 @@ export default function ProductForm({ product }: { product?: Product | null }) {
             id="name"
             type="text"
             required
-            defaultValue={product?.name || ""}
+            defaultValue={service?.name || ""}
           />
-          {error.name && <div className="destructive">{error.name}</div>}
+          {error.name && <div className="text-red-500">{error.name}</div>}
         </div>
 
         <div className="flex flex-col ml-2 space-y-2">
@@ -45,7 +49,7 @@ export default function ProductForm({ product }: { product?: Product | null }) {
             }
           ></Input>
           {error.priceInCents && (
-            <div className="destructive">{error.priceInCents}</div>
+            <div className="text-red-500">{error.priceInCents}</div>
           )}
         </div>
 
@@ -55,18 +59,18 @@ export default function ProductForm({ product }: { product?: Product | null }) {
           <Textarea
             name="description"
             id="description"
-            defaultValue={product?.description || ""}
+            defaultValue={service?.description || ""}
             required
           ></Textarea>
           {error.description && (
-            <div className="destructive">{error.description}</div>
+            <div className="text-red-500">{error.description}</div>
           )}
         </div>
 
         <div className="flex flex-col ml-2 space-y-2">
           <Label htmlFor="File">File</Label>
-          <Input name="file" id="file" type="file" required={product == null} />
-          {error.file && <div className="destructive">{error.file}</div>}
+          <Input name="file" id="file" type="file" required={service == null} />
+          {error.file && <div className="text-red-500">{error.file}</div>}
         </div>
 
         <div className="flex flex-col ml-2 space-y-2">
@@ -75,11 +79,18 @@ export default function ProductForm({ product }: { product?: Product | null }) {
             name="image"
             id="image"
             type="file"
-            required={product == null}
+            required={service == null}
           />
-          {error.image && <div className="destructive">{error.image}</div>}
+          {service != null && (
+            <Image
+              src={service.imagePath}
+              width={400}
+              height={400}
+              alt="Service Image"
+            />
+          )}
+          {error.image && <div className="text-red-500">{error.image}</div>}
         </div>
-
         <SubmitButton />
       </form>
     </>
